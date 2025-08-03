@@ -1,18 +1,21 @@
 import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchStoreTimes } from '../store/storeSlice';
+import { fetchStoreTimes, fetchStoreOverrides } from '../store/storeSlice';
 
 export const useStoreTimes = () => {
   const dispatch = useAppDispatch();
-  const { storeTimes, loading, error } = useAppSelector(
+  const { storeTimes, storeOverrides, loading, error } = useAppSelector(
     state => state.storeTimes,
   );
 
   const fetchTimes = useCallback(async () => {
     try {
-      await dispatch(fetchStoreTimes()).unwrap();
+      await Promise.all([
+        dispatch(fetchStoreTimes()).unwrap(),
+        dispatch(fetchStoreOverrides()).unwrap(),
+      ]);
     } catch (error: any) {
-      console.error('Failed to fetch store times:', error);
+      console.error('Failed to fetch store data:', error);
     }
   }, [dispatch]);
 
@@ -22,6 +25,7 @@ export const useStoreTimes = () => {
 
   return {
     storeTimes,
+    storeOverrides,
     loading,
     error,
     refetch: fetchTimes,

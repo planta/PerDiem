@@ -6,6 +6,7 @@ interface User {
   uid: string;
   email: string | null;
   displayName: string | null;
+  photoURL?: string | null | undefined;
 }
 
 type LoginMethod = 'email' | 'google' | null;
@@ -92,11 +93,29 @@ export const signOut = createAsyncThunk(
 export const checkAuthStatus = createAsyncThunk(
   'auth/checkAuthStatus',
   async () => {
+    // First check for JWT token (email/password auth)
     const hasToken = await authService.hasValidToken();
     if (hasToken) {
       const token = await authService.getStoredToken();
       return { token, loginMethod: 'email' as const };
     }
+
+    // Then check for Firebase authentication (Google Sign-In)
+    const currentUser = firebaseService.getCurrentUser();
+    if (currentUser) {
+      // Serialize the Firebase user object
+      const serializedUser = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL ?? null,
+      };
+      return {
+        user: serializedUser,
+        loginMethod: 'google' as const,
+      };
+    }
+
     return null;
   },
 );
@@ -164,6 +183,7 @@ const authSlice = createSlice({
             uid: action.payload.user.uid,
             email: action.payload.user.email,
             displayName: action.payload.user.displayName,
+            photoURL: action.payload.user.photoURL,
           };
           state.loginMethod = action.payload.loginMethod;
         }

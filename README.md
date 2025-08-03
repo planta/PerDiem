@@ -1,97 +1,271 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# PerDiem - Restaurant Reservation & Store Hours App
 
-# Getting Started
+A modern React Native mobile application that helps users check restaurant/store hours, make reservations, and manage their dining preferences with intelligent timezone handling and real-time store status updates.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🍽️ What is PerDiem?
 
-## Step 1: Start Metro
+PerDiem is a comprehensive restaurant and store management app that provides users with:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Real-time Store Hours**: Check current and future store operating hours
+- **Smart Reservations**: Book time slots based on meal types (Breakfast, Lunch, Dinner)
+- **Timezone Intelligence**: Automatic timezone conversion for global users
+- **Store Overrides**: Handle special hours, closures, and holiday schedules
+- **Push Notifications**: Get notified about store openings and reservation reminders
+- **Modern UI/UX**: Beautiful, intuitive interface with smooth animations
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🚀 Key Features
+
+### 📅 Dynamic Date Selection
+
+- 4-day quick selection cards
+- Full calendar view with store status indicators
+- Future-only date selection
+- Visual open/closed status indicators
+
+### ⏰ Intelligent Time Slot Management
+
+- 30-minute reservation intervals
+- Meal-type based time ranges (Breakfast: 6AM-12PM, Lunch: 12PM-6PM, Dinner: 6PM-12AM)
+- Real-time availability checking
+- Future-only time slot filtering
+
+### 🌍 Advanced Timezone Handling
+
+- Automatic timezone detection
+- Store hours display in user's local timezone
+- Time slots always in store's local timezone (NY)
+- Seamless timezone switching
+
+### 🔔 Smart Notifications
+
+- Store opening reminders (1 hour before)
+- Reservation confirmations
+- Test notification system
+- Permission management
+
+### 🏪 Store Override System
+
+- Special hours for holidays
+- Temporary closures
+- Modified operating hours
+- Real-time status updates
+
+## 🛠️ Technology Stack
+
+### **Frontend Framework**
+
+- **React Native 0.80.2** - Cross-platform mobile development
+- **TypeScript 5.0.4** - Type-safe JavaScript development
+- **React 19.1.0** - Modern React with latest features
+
+### **State Management**
+
+- **Redux Toolkit 2.8.2** - Modern Redux with simplified patterns
+- **Redux Persist 6.0.0** - Persistent state storage
+- **React Redux 9.2.0** - React bindings for Redux
+
+### **Navigation**
+
+- **React Navigation 7.1.16** - Native navigation
+- **Native Stack Navigator** - Stack-based navigation
+- **Navigation Service** - Centralized navigation management
+
+### **UI Components & Animations**
+
+- **@gorhom/bottom-sheet 5.1.8** - Modal bottom sheets
+- **React Native Gesture Handler 2.27.2** - Touch gestures
+- **React Native Reanimated 4.0.1** - Smooth animations
+- **React Native Calendars 1.1313.0** - Calendar component
+
+### **Date & Time Handling**
+
+- **date-fns 4.1.0** - Modern date utility library
+- **date-fns-tz 3.2.0** - Timezone support
+- **Intl.DateTimeFormat** - Native timezone formatting
+
+### **Authentication & Backend**
+
+- **Firebase Auth 22.4.0** - User authentication
+- **Google Sign-In 15.0.0** - Social authentication
+- **AsyncStorage 2.2.0** - Local data persistence
+
+### **Notifications**
+
+- **@notifee/react-native 9.1.8** - Local push notifications
+- **React Native Toast Message 2.3.3** - Toast notifications
+
+### **Development Tools**
+
+- **ESLint** - Code linting with React Native rules
+- **Prettier 2.8.8** - Code formatting
+- **Jest 29.6.3** - Testing framework
+- **@testing-library/react-native** - Component testing
+
+## 🏗️ Architecture Overview
+
+### **Component Structure**
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── DateSelector/   # Date selection with 4-day cards
+│   ├── TimeSlotSelector/ # Time slot grid with meal types
+│   ├── MealTypeSelector/ # Breakfast/Lunch/Dinner selector
+│   ├── CalendarBottomSheet/ # Modal calendar component
+│   └── Header/         # App header with logout
+├── screens/            # Main app screens
+│   ├── HomeScreen/     # Main dashboard
+│   └── auth/           # Authentication screens
+├── services/           # API and external services
+│   ├── storeService/   # Store hours and overrides API
+│   ├── authService/    # Firebase authentication
+│   └── notificationService/ # Push notifications
+├── store/              # Redux state management
+│   ├── authSlice/      # Authentication state
+│   ├── storeSlice/     # Store data state
+│   └── notificationSlice/ # Notification state
+├── hooks/              # Custom React hooks
+├── utils/              # Utility functions
+│   ├── timezoneUtils/  # Timezone conversion logic
+│   └── storeUtils/     # Store data processing
+└── navigation/         # Navigation configuration
+```
+
+### **Data Flow**
+
+1. **Store Data Fetching**: `useStoreTimes` hook fetches store hours and overrides
+2. **Timezone Processing**: `timezoneUtils` handles timezone conversions
+3. **State Management**: Redux stores processed data with loading states
+4. **UI Rendering**: Components display data with proper timezone handling
+5. **User Interactions**: Date/time selections trigger state updates
+
+### **Key Design Patterns**
+
+- **Custom Hooks**: Encapsulate business logic (`useStoreTimes`, `useTimezone`)
+- **Memoization**: Optimize performance with `useMemo` and `useCallback`
+- **Error Boundaries**: Graceful error handling with retry mechanisms
+- **Component Composition**: Reusable components with clear interfaces
+
+## 📱 Getting Started
+
+> **Note**: Make sure you have completed the [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+
+### Prerequisites
+
+- Node.js >= 18
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+
+### Step 1: Install Dependencies
 
 ```sh
-# Using npm
+# Install Node.js dependencies
+npm install
+
+# Install iOS dependencies (macOS only)
+cd ios && bundle install && bundle exec pod install && cd ..
+```
+
+### Step 2: Start Metro Bundler
+
+```sh
+# Start the Metro development server
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+### Step 3: Run the App
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+#### Android
 
 ```sh
-# Using npm
+# Start Android emulator or connect device, then run:
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+#### iOS (macOS only)
 
 ```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Start iOS simulator or connect device, then run:
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 🧪 Testing
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```sh
+# Run all tests
+npm test
 
-## Step 3: Modify your app
+# Run tests with coverage
+npm test -- --coverage
 
-Now that you have successfully run the app, let's make changes!
+# Run tests in watch mode
+npm test -- --watch
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## 🔧 Development
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Code Quality
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+```sh
+# Run ESLint
+npm run lint
 
-## Congratulations! :tada:
+# Fix ESLint issues automatically
+npm run lint -- --fix
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+### Available Scripts
 
-### Now what?
+- `npm start` - Start Metro bundler
+- `npm run android` - Run on Android
+- `npm run ios` - Run on iOS
+- `npm test` - Run tests
+- `npm run lint` - Run ESLint
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## 🌐 API Integration
 
-# Troubleshooting
+The app integrates with the following APIs:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **Store Hours API**: `https://coding-challenge-pd-1a25b1a14f34.herokuapp.com/store-times/`
+- **Store Overrides API**: `https://coding-challenge-pd-1a25b1a14f34.herokuapp.com/store-overrides/`
+- **Firebase**: Authentication and user management
 
-# Learn More
+## 🔒 Environment Setup
 
-To learn more about React Native, take a look at the following resources:
+Create a `.env` file in the root directory for environment variables:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+```env
+# Firebase Configuration
+FIREBASE_API_KEY=your_firebase_api_key
+FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+FIREBASE_PROJECT_ID=your_project_id
+
+# API Endpoints
+STORE_TIMES_API=https://coding-challenge-pd-1a25b1a14f34.herokuapp.com/store-times/
+STORE_OVERRIDES_API=https://coding-challenge-pd-1a25b1a14f34.herokuapp.com/store-overrides/
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+
+- Create an issue in the GitHub repository
+- Check the [React Native documentation](https://reactnative.dev/docs/getting-started)
+- Review the [Firebase documentation](https://firebase.google.com/docs)
+
+---
+
+**Built with ❤️ using React Native and modern web technologies**

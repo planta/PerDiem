@@ -1,25 +1,16 @@
-import { useState } from 'react';
+import { getDeviceCityName } from '../utils/timezoneUtils';
 
-export const useGreetingMessage = () => {
-  const [useDeviceTimezone, setUseDeviceTimezone] = useState(false);
-
-  const getDeviceCityName = () => {
-    try {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const cityName =
-        timezone.split('/').pop()?.replace('_', ' ') || 'Your City';
-      return cityName;
-    } catch (error) {
-      return 'Your City';
-    }
-  };
-
+export const useGreetingMessage = (useDeviceTimezone: boolean) => {
   const getGreetingMessage = () => {
-    const nyTime = new Date().toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-    });
-    const nyDate = new Date(nyTime);
-    const nyHour = nyDate.getHours();
+    const now = new Date();
+    const nyHour = parseInt(
+      now.toLocaleString('en-US', {
+        timeZone: 'America/New_York',
+        hour: 'numeric',
+        hour12: false,
+      }),
+      10,
+    );
 
     const cityName = useDeviceTimezone ? getDeviceCityName() : 'NYC';
 
@@ -36,21 +27,7 @@ export const useGreetingMessage = () => {
     }
   };
 
-  const getCurrentTimezone = () => {
-    return useDeviceTimezone
-      ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      : 'America/New_York';
-  };
-
-  const getDisplayTimezone = () => {
-    return useDeviceTimezone ? getDeviceCityName() : 'New York';
-  };
-
   return {
     greetingMessage: getGreetingMessage(),
-    useDeviceTimezone,
-    setUseDeviceTimezone,
-    getCurrentTimezone,
-    getDisplayTimezone,
   };
 };

@@ -1,15 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { storeService, StoreTime } from '../services/storeService';
+import {
+  storeService,
+  StoreTime,
+  StoreOverride,
+} from '../services/storeService';
 
 interface StoreTimesState {
   storeTimes: StoreTime[];
+  storeOverrides: StoreOverride[];
   loading: boolean;
+  loadingStoreTimes: boolean;
+  loadingStoreOverrides: boolean;
   error: string | null;
 }
 
 const initialState: StoreTimesState = {
   storeTimes: [],
+  storeOverrides: [],
   loading: false,
+  loadingStoreTimes: false,
+  loadingStoreOverrides: false,
   error: null,
 };
 
@@ -22,12 +32,22 @@ export const fetchStoreTimes = createAsyncThunk(
   },
 );
 
+// Async thunk for fetching store overrides
+export const fetchStoreOverrides = createAsyncThunk(
+  'storeTimes/fetchStoreOverrides',
+  async () => {
+    const storeOverrides = await storeService.getStoreOverrides();
+    return storeOverrides;
+  },
+);
+
 const storeTimesSlice = createSlice({
   name: 'storeTimes',
   initialState,
   reducers: {
     clearStoreTimes: state => {
       state.storeTimes = [];
+      state.storeOverrides = [];
       state.error = null;
     },
     clearError: state => {
@@ -37,17 +57,35 @@ const storeTimesSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchStoreTimes.pending, state => {
-        state.loading = true;
+        state.loadingStoreTimes = true;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
         state.error = null;
       })
       .addCase(fetchStoreTimes.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingStoreTimes = false;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
         state.storeTimes = action.payload;
         state.error = null;
       })
       .addCase(fetchStoreTimes.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingStoreTimes = false;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
         state.error = action.error.message || 'Failed to fetch store times';
+      })
+      .addCase(fetchStoreOverrides.pending, state => {
+        state.loadingStoreOverrides = true;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
+        state.error = null;
+      })
+      .addCase(fetchStoreOverrides.fulfilled, (state, action) => {
+        state.loadingStoreOverrides = false;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
+        state.storeOverrides = action.payload;
+      })
+      .addCase(fetchStoreOverrides.rejected, (state, action) => {
+        state.loadingStoreOverrides = false;
+        state.loading = state.loadingStoreTimes || state.loadingStoreOverrides;
+        state.error = action.error.message || 'Failed to fetch store overrides';
       });
   },
 });

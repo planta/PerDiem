@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   signInWithEmailAndPassword,
@@ -24,14 +24,22 @@ const LoginScreen: React.FC = () => {
 
   const onEmailLoginPress = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please fill in all fields',
+      });
       return;
     }
 
     try {
       await dispatch(signInWithEmailAndPassword({ email, password })).unwrap();
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: error.message || 'Please check your credentials and try again',
+      });
     }
   };
 
@@ -39,7 +47,12 @@ const LoginScreen: React.FC = () => {
     try {
       await dispatch(signInWithGoogle()).unwrap();
     } catch (error: any) {
-      Alert.alert('Google Login Failed', error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Google Login Failed',
+        text2:
+          error.message || 'Unable to sign in with Google. Please try again.',
+      });
     }
   };
 

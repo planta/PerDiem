@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const TOKEN_KEY = 'auth_token';
 
 export const tokenStorage = {
-  // Store the JWT token
   setToken: async (token: string): Promise<void> => {
     try {
       await AsyncStorage.setItem(TOKEN_KEY, token);
@@ -13,7 +12,6 @@ export const tokenStorage = {
     }
   },
 
-  // Retrieve the JWT token
   getToken: async (): Promise<string | null> => {
     try {
       return await AsyncStorage.getItem(TOKEN_KEY);
@@ -23,7 +21,6 @@ export const tokenStorage = {
     }
   },
 
-  // Remove the JWT token (for logout)
   removeToken: async (): Promise<void> => {
     try {
       await AsyncStorage.removeItem(TOKEN_KEY);
@@ -33,7 +30,6 @@ export const tokenStorage = {
     }
   },
 
-  // Check if token exists
   hasToken: async (): Promise<boolean> => {
     try {
       const token = await AsyncStorage.getItem(TOKEN_KEY);

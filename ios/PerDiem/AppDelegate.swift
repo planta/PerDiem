@@ -21,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     FirebaseApp.configure()
 
+    // Configure notifications - Notifee will handle permissions automatically
+    print("Notifee notification system initialized")
+
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
@@ -49,3 +52,5 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
 #endif
   }
 }
+
+// Notifee handles notification delegates automatically
