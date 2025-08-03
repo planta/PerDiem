@@ -33,7 +33,6 @@ import { notificationService } from '../services/notificationService';
 import {
   getSelectedDateInfo,
   getStoreTimesForTimeSlots,
-  formatStoreHours,
 } from '../utils/storeUtils';
 import { getDisplayTimezone } from '../utils/timezoneUtils';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -124,11 +123,11 @@ const HomeScreen: React.FC = () => {
     () =>
       getSelectedDateInfo(
         selectedDate,
-        storeTimes,
+        memoizedStoreTimes,
         storeOverrides,
         useDeviceTimezone,
       ),
-    [selectedDate, storeTimes, storeOverrides, useDeviceTimezone],
+    [selectedDate, memoizedStoreTimes, storeOverrides, useDeviceTimezone],
   );
 
   return (
@@ -144,7 +143,7 @@ const HomeScreen: React.FC = () => {
               {user?.displayName || user?.email || 'User'}
             </Text>
 
-            <View style={styles.timezoneToggleContainer}>
+            <View style={styles.infoCard}>
               <View style={styles.timezoneInfo}>
                 <View>
                   <Text style={styles.timezoneLabel}>Timezone</Text>
@@ -171,7 +170,8 @@ const HomeScreen: React.FC = () => {
               </View>
             </View>
 
-            {loadingStoreTimes || (!error && storeTimes.length === 0) ? (
+            {loadingStoreTimes ||
+            (!error && memoizedStoreTimes.length === 0) ? (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#000000" />
                 <Text style={styles.loadingText}>Loading store times...</Text>
@@ -186,7 +186,7 @@ const HomeScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <>
+              <View style={styles.bookingContainer}>
                 <MealTypeSelector
                   selectedMealType={mealType}
                   onMealTypeChange={setMealType}
@@ -196,7 +196,7 @@ const HomeScreen: React.FC = () => {
                   selectedDate={selectedDate}
                   onDateChange={setSelectedDate}
                   onOpenCalendar={openCalendar}
-                  storeTimes={storeTimes}
+                  storeTimes={memoizedStoreTimes}
                   storeOverrides={storeOverrides}
                 />
 
@@ -205,10 +205,9 @@ const HomeScreen: React.FC = () => {
                     {selectedDateInfo.dayName} - {selectedDateInfo.dateString}
                   </Text>
                   {selectedDateInfo.isOpen ? (
-                    selectedDateInfo.storeTimes.length > 0 && (
+                    selectedDateInfo.storeTimes && (
                       <Text style={styles.timeText}>
-                        Store hours:{' '}
-                        {formatStoreHours(selectedDateInfo.storeTimes)}
+                        Store hours: {selectedDateInfo.storeTimes}
                       </Text>
                     )
                   ) : (
@@ -217,16 +216,12 @@ const HomeScreen: React.FC = () => {
 
                   {selectedDateInfo.isOpen && (
                     <View style={styles.timeslotsContainer}>
-                      <Text style={styles.infoTitle}>
-                        Select preferred time of day
-                      </Text>
-
                       <TimeSlotSelector
                         selectedMealType={mealType}
                         selectedDate={selectedDate}
                         storeTimes={getStoreTimesForTimeSlots(
                           selectedDate,
-                          storeTimes,
+                          memoizedStoreTimes,
                           storeOverrides,
                         )}
                         selectedTimeSlot={selectedTimeSlot}
@@ -235,7 +230,7 @@ const HomeScreen: React.FC = () => {
                     </View>
                   )}
                 </View>
-              </>
+              </View>
             )}
           </View>
         </ScrollView>
@@ -246,7 +241,7 @@ const HomeScreen: React.FC = () => {
         onDateSelect={handleDateSelect}
         onClose={closeCalendar}
         bottomSheetRef={calendarBottomSheetRef}
-        storeTimes={storeTimes}
+        storeTimes={memoizedStoreTimes}
         storeOverrides={storeOverrides}
       />
     </View>
@@ -339,7 +334,6 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   infoTitle: {
@@ -382,6 +376,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     fontWeight: '500',
+  },
+  bookingContainer: {
+    marginTop: 20,
   },
 });
 

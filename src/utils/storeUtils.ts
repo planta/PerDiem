@@ -9,7 +9,7 @@ export interface SelectedDateInfo {
   dayName: string;
   dateString: string;
   isOpen: boolean;
-  storeTimes: StoreTime[];
+  storeTimes: string;
 }
 
 export const getSelectedDateInfo = (
@@ -60,11 +60,26 @@ export const getSelectedDateInfo = (
       : time.end_time,
   }));
 
+  // Format store hours
+  const timezoneConvertedStoreTimes = convertedStoreTimes
+    .map((time: StoreTime) => {
+      const startTime = time.start_time;
+      const endTime = time.end_time;
+      const [startHour, startMin] = startTime.split(':');
+      const [endHour, endMin] = endTime.split(':');
+      const startAMPM = parseInt(startHour, 10) >= 12 ? 'PM' : 'AM';
+      const endAMPM = parseInt(endHour, 10) >= 12 ? 'PM' : 'AM';
+      const startDisplayHour = parseInt(startHour, 10) % 12 || 12;
+      const endDisplayHour = parseInt(endHour, 10) % 12 || 12;
+      return `${startDisplayHour}:${startMin} ${startAMPM} - ${endDisplayHour}:${endMin} ${endAMPM}`;
+    })
+    .join(', ');
+
   return {
     dayName,
     dateString,
     isOpen,
-    storeTimes: convertedStoreTimes,
+    storeTimes: timezoneConvertedStoreTimes,
   };
 };
 
@@ -74,7 +89,6 @@ export const getStoreTimesForTimeSlots = (
   storeTimes: StoreTime[],
   storeOverrides: StoreOverride[],
 ): StoreTime[] => {
-  // Merge store times with overrides for this specific date
   const mergedStoreTimes = storeService.mergeStoreTimesWithOverrides(
     storeTimes,
     storeOverrides,
@@ -83,22 +97,4 @@ export const getStoreTimesForTimeSlots = (
 
   // Return only open times, but keep them in NY timezone
   return mergedStoreTimes.filter((time: StoreTime) => time.is_open);
-};
-
-export const formatStoreHours = (storeTimes: StoreTime[]): string => {
-  return storeTimes
-    .filter((time: StoreTime) => time.is_open)
-    .map((time: StoreTime) => {
-      // Use the timezone-converted times that are already in the storeTimes array
-      const startTime = time.start_time;
-      const endTime = time.end_time;
-      const [startHour, startMin] = startTime.split(':');
-      const [endHour, endMin] = endTime.split(':');
-      const startAMPM = parseInt(startHour) >= 12 ? 'PM' : 'AM';
-      const endAMPM = parseInt(endHour) >= 12 ? 'PM' : 'AM';
-      const startDisplayHour = parseInt(startHour) % 12 || 12;
-      const endDisplayHour = parseInt(endHour) % 12 || 12;
-      return `${startDisplayHour}:${startMin} ${startAMPM} - ${endDisplayHour}:${endMin} ${endAMPM}`;
-    })
-    .join(', ');
 };

@@ -9,15 +9,15 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   signInWithEmailAndPassword,
   signInWithGoogle,
-} from '../../store/authSlice';
+} from '../store/authSlice';
 
 const LoginScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector(state => state.auth);
+  const { loading } = useAppSelector(state => state.auth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -113,8 +113,6 @@ const LoginScreen: React.FC = () => {
             )}
           </TouchableOpacity>
         </View>
-
-        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
     </SafeAreaView>
   );

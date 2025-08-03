@@ -1,6 +1,5 @@
 import notifee, {
   AndroidImportance,
-  EventType,
   TriggerType,
   RepeatFrequency,
 } from '@notifee/react-native';
@@ -21,13 +20,11 @@ class NotificationService {
 
   private isEmulator(): boolean {
     if (Platform.OS === 'android') {
-      // Check for common emulator indicators
       const isEmulator =
         __DEV__ ||
         process.env.NODE_ENV === 'development' ||
         !!process.env.REACT_NATIVE_PACKAGER_HOSTNAME;
 
-      console.log('Running on emulator:', isEmulator);
       return isEmulator;
     }
     return false;
@@ -59,35 +56,6 @@ class NotificationService {
           vibration: true,
         });
       }
-
-      // Set up notification event listeners
-      notifee.onForegroundEvent(({ type, detail }) => {
-        switch (type) {
-          case EventType.PRESS:
-            console.log('User pressed notification', detail.notification);
-            break;
-          case EventType.DISMISSED:
-            console.log('User dismissed notification', detail.notification);
-            break;
-        }
-      });
-
-      notifee.onBackgroundEvent(async ({ type, detail }) => {
-        switch (type) {
-          case EventType.PRESS:
-            console.log(
-              'User pressed notification (background)',
-              detail.notification,
-            );
-            break;
-          case EventType.DISMISSED:
-            console.log(
-              'User dismissed notification (background)',
-              detail.notification,
-            );
-            break;
-        }
-      });
     } catch (error) {
       console.error('Error configuring notifications:', error);
     }
@@ -244,12 +212,6 @@ class NotificationService {
       const channels = await notifee.getChannels();
       const scheduled = await this.getScheduledNotifications();
 
-      console.log('Notification Status:', {
-        permissions,
-        channelsCount: channels.length,
-        scheduledCount: scheduled.length,
-      });
-
       return {
         permissions,
         channels,
@@ -265,89 +227,13 @@ class NotificationService {
     }
   }
 
-  public async testEmulatorNotifications(): Promise<void> {
-    try {
-      const isEmulator = this.isEmulator();
-      console.log('Running on emulator:', isEmulator);
-
-      // Check notification status
-      const status = await this.checkNotificationStatus();
-      console.log('Notification status:', status);
-
-      await notifee.displayNotification({
-        id: 'emulator-test-immediate',
-        title: 'Test Notification',
-        body: 'If you see this, notifications are working!',
-        android: {
-          channelId: 'test-notifications',
-          importance: AndroidImportance.HIGH,
-          pressAction: {
-            id: 'default',
-          },
-          smallIcon: 'ic_launcher',
-          color: '#FF0000',
-          sound: 'default',
-          vibrationPattern: [300, 500],
-          showTimestamp: true,
-        },
-      });
-
-      // Also try a delayed notification
-      const delayedDate = new Date();
-      delayedDate.setSeconds(delayedDate.getSeconds() + 5);
-
-      console.log(
-        'Scheduling delayed notification for:',
-        delayedDate.toISOString(),
-      );
-
-      await notifee.createTriggerNotification(
-        {
-          id: 'emulator-test-delayed',
-          title: '⏰ Delayed Test',
-          body: 'This is a delayed notification test',
-          android: {
-            channelId: 'test-notifications',
-            importance: AndroidImportance.HIGH,
-            pressAction: {
-              id: 'default',
-            },
-            smallIcon: 'ic_launcher',
-            color: '#00FF00',
-            sound: 'default',
-            vibrationPattern: [300, 500],
-          },
-        },
-        {
-          type: TriggerType.TIMESTAMP,
-          timestamp: delayedDate.getTime(),
-          alarmManager: true,
-        },
-      );
-
-      console.log('Delayed notification scheduled successfully');
-      console.log('=== EMULATOR TEST COMPLETE ===');
-    } catch (error) {
-      console.error('Emulator notification test failed:', error);
-      throw error;
-    }
-  }
-
   public async scheduleTestNotification(): Promise<void> {
     try {
       const isEmulator = this.isEmulator();
-      console.log('Scheduling test notification on emulator:', isEmulator);
-
-      // Check permissions first
       const hasPermissions = await this.checkPermissions();
-      console.log('Notification permissions granted:', hasPermissions);
 
       if (!hasPermissions) {
-        console.warn(
-          'Notification permissions not granted. Requesting permissions...',
-        );
         const granted = await this.requestPermissions();
-        console.log('Permission request result:', granted);
 
         if (!granted) {
           throw new Error('Notification permissions not granted');
@@ -356,8 +242,6 @@ class NotificationService {
 
       const testDate = new Date();
       testDate.setSeconds(testDate.getSeconds() + 10);
-
-      console.log('Scheduling notification for:', testDate.toISOString());
 
       await notifee.createTriggerNotification(
         {
@@ -374,7 +258,6 @@ class NotificationService {
             color: '#FF0000',
             sound: 'default',
             vibrationPattern: [300, 500],
-            // Add more Android-specific options for emulator testing
             showTimestamp: true,
             timestamp: Date.now(),
           },
@@ -390,7 +273,7 @@ class NotificationService {
         },
       );
 
-      // For emulator testing, also try immediate notification
+      // For emulator testing send immediate notification
       if (isEmulator) {
         await notifee.displayNotification({
           id: 'immediate-test',

@@ -55,7 +55,7 @@ describe('DateSelector', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the title correctly', () => {
+  it('should render the title correctly', () => {
     const { getByText } = render(
       <DateSelector
         selectedDate="2024-01-15"
@@ -113,7 +113,7 @@ describe('DateSelector', () => {
     expect(getByText('Today')).toBeTruthy();
   });
 
-  it('calls onDateChange when a date card is pressed', () => {
+  it('should call onDateChange when a date card is pressed', () => {
     const { getAllByText } = render(
       <DateSelector
         selectedDate="2024-01-15"

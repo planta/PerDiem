@@ -38,7 +38,7 @@ export const CalendarBottomSheet: React.FC<CalendarBottomSheetProps> = ({
     [onDateSelect, onClose],
   );
 
-  const renderBackdrop = useCallback(
+  const renderBottomSheetBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
         {...props}
@@ -50,7 +50,6 @@ export const CalendarBottomSheet: React.FC<CalendarBottomSheetProps> = ({
     [],
   );
 
-  // Generate marked dates with store status
   const markedDates = useMemo(() => {
     const marked: any = {
       [selectedDate]: {
@@ -69,7 +68,6 @@ export const CalendarBottomSheet: React.FC<CalendarBottomSheetProps> = ({
       const date = new Date(currentYear, currentMonth, day);
       const dateString = date.toISOString().split('T')[0];
 
-      // Check if store is open s day (with overrides)
       const mergedStoreTimes = storeService.mergeStoreTimesWithOverrides(
         storeTimes,
         storeOverrides,
@@ -95,7 +93,7 @@ export const CalendarBottomSheet: React.FC<CalendarBottomSheetProps> = ({
       index={-1}
       snapPoints={snapPoints}
       enablePanDownToClose
-      backdropComponent={renderBackdrop}
+      backdropComponent={renderBottomSheetBackdrop}
     >
       <BottomSheetView style={styles.calendarContainer}>
         <Text style={styles.calendarTitle}>Select a date</Text>

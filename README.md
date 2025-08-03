@@ -39,7 +39,6 @@ PerDiem is a comprehensive restaurant and store management app that provides use
 ### 🔔 Smart Notifications
 
 - Store opening reminders (1 hour before)
-- Reservation confirmations
 - Test notification system
 - Permission management
 
@@ -48,7 +47,6 @@ PerDiem is a comprehensive restaurant and store management app that provides use
 - Special hours for holidays
 - Temporary closures
 - Modified operating hours
-- Real-time status updates
 
 ## 🛠️ Technology Stack
 
@@ -56,7 +54,6 @@ PerDiem is a comprehensive restaurant and store management app that provides use
 
 - **React Native 0.80.2** - Cross-platform mobile development
 - **TypeScript 5.0.4** - Type-safe JavaScript development
-- **React 19.1.0** - Modern React with latest features
 
 ### **State Management**
 

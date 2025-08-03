@@ -12,35 +12,27 @@ GoogleSignin.configure({
 export const firebaseService = {
   signInWithGoogle: async () => {
     try {
-      console.log('Starting Google Sign-In process...');
-      console.log('Platform:', Platform.OS);
-
       // Check if device supports Google Play Services
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
-      console.log('Google Play Services check passed');
 
       // Sign in with Google
       await GoogleSignin.signIn();
-      console.log('Google Sign-In successful');
 
       // Get the access token
       const { accessToken } = await GoogleSignin.getTokens();
-      console.log('Access token obtained');
 
       // Create Firebase credential
       const googleCredential = auth.GoogleAuthProvider.credential(
         null,
         accessToken,
       );
-      console.log('Firebase credential created');
 
       // Sign in to Firebase
       const userCredential = await auth().signInWithCredential(
         googleCredential,
       );
-      console.log('Firebase authentication successful');
 
       // Serialize the Firebase user object to only include serializable data
       const serializedUser = {
@@ -50,7 +42,6 @@ export const firebaseService = {
         photoURL: userCredential.user.photoURL,
       };
 
-      console.log('User serialized successfully');
       return {
         success: true,
         user: serializedUser,

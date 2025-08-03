@@ -220,7 +220,7 @@ const authSlice = createSlice({
       })
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         if (action.payload) {
-          state.token = action.payload.token;
+          state.token = action.payload.token ?? null;
           state.loginMethod = action.payload.loginMethod;
           state.isAuthenticated = true;
         } else {
