@@ -8,9 +8,6 @@ jest.mock('../../services/storeService', () => ({
   },
 }));
 
-// Mock console.error to avoid noise in tests
-const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
 // Mock React hooks
 const mockUseAppDispatch = jest.fn();
 const mockUseAppSelector = jest.fn();
@@ -32,14 +29,9 @@ describe('useStoreTimes', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    consoleSpy.mockClear();
 
     mockDispatch = jest.fn();
     mockUseAppDispatch.mockReturnValue(mockDispatch);
-  });
-
-  afterAll(() => {
-    consoleSpy.mockRestore();
   });
 
   describe('initial state', () => {
