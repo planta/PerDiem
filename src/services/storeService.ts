@@ -89,7 +89,7 @@ export const storeService = {
   formatTime: (time: string): string => {
     // Convert 24-hour format to 12-hour format
     const [hours, minutes] = time.split(':');
-    const hour = parseInt(hours);
+    const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
@@ -110,7 +110,7 @@ export const storeService = {
     // Convert to array and determine if day is open
     return Object.keys(groupedByDay)
       .map(dayKey => {
-        const dayOfWeek = parseInt(dayKey);
+        const dayOfWeek = parseInt(dayKey, 10);
         const timeSlots = groupedByDay[dayOfWeek];
         const isOpen = timeSlots.some(slot => slot.is_open);
 
