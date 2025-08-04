@@ -1,17 +1,24 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { signOut } from '../store/authSlice';
+import { useAppDispatch } from '../store/hooks';
 
 interface HeaderProps {
-  onLogoutPress: () => void;
   loading?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  onLogoutPress,
-  loading = false,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ loading = false }) => {
   const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
+
+  const onLogoutPress = async () => {
+    try {
+      await dispatch(signOut()).unwrap();
+    } catch (error: any) {
+      console.error('Logout failed:', error.message);
+    }
+  };
 
   return (
     <View

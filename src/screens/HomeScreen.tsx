@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { signOut } from '../store/authSlice';
 import {
   checkNotificationPermissions,
   scheduleStoreNotifications,
@@ -87,14 +86,6 @@ const HomeScreen: React.FC = () => {
     }
   }, [permissionsGranted, memoizedStoreTimes, dispatch]);
 
-  const onLogoutPress = async () => {
-    try {
-      await dispatch(signOut()).unwrap();
-    } catch (error: any) {
-      console.error('Logout failed:', error.message);
-    }
-  };
-
   const onTestNotificationPress = async () => {
     try {
       await notificationService.scheduleTestNotification();
@@ -132,7 +123,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header onLogoutPress={onLogoutPress} loading={loading} />
+      <Header loading={loading} />
 
       <View style={styles.container}>
         <ScrollView style={styles.container}>
